@@ -19,7 +19,6 @@ axios
       const quote = data.find((item) => {
         return item.id === randomId;
       });
-      console.log("quote", quote);
       tweet = `Tweet for you! "${quote.quote}"`;
     } else {
       tweet = "You go girl! You can do this!";
