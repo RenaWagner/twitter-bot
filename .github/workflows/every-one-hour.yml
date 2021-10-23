@@ -1,27 +1,58 @@
-name: Triggered every 1hour
+# name: Triggered every 1hour
+# on:
+#   schedule:
+#     - cron: "* 1 * * *"
+
+# jobs:
+#   setUpAndRun:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 5
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0
+#       - uses: actions/setup-node@v2
+#         with:
+#           node-version: 12
+#       - name: Cache node modules
+#         uses: actions/cache@v2
+#         id: npm-cache
+#         with:
+#           path: "**/node_modules"
+#           key: npm-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             npm-
+#       - name: Install Node.js dependencies
+#         run: |-
+#           if [[ "${{ steps.npm-cache.outputs.cache-hit }}" != "true" ]]; then
+#             npm install
+#           else
+#             echo "Using cache"
+#           fi
+#         working-directory: ./
+#       - name: Run Node.js script
+#         run: npm start
+#         env:
+#           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+#           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+#           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+#           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+name: Twitter bot
 on:
   schedule:
     - cron: "* 1 * * *"
 
 jobs:
-  setUpAndRun:
+  build:
+    name: Tweet about the new playlists
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node.js
+        uses: actions/setup-node@v1
         with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 12
-      - name: Cache node modules
-        uses: actions/cache@v2
-        id: npm-cache
-        with:
-          path: "**/node_modules"
-          key: npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            npm-
+          node-version: "14.x"
       - name: Install Node.js dependencies
         run: |-
           if [[ "${{ steps.npm-cache.outputs.cache-hit }}" != "true" ]]; then
@@ -30,35 +61,10 @@ jobs:
             echo "Using cache"
           fi
         working-directory: ./
-      - name: Run Node.js script
+ - name: Run Node.js script
         run: npm start
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-# name: Twitter bot
-# on:
-#   schedule:
-#     - cron: "0 15 * * 3"
-
-# jobs:
-#   build:
-#     name: Tweet about the new playlists
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout Repo
-#         uses: actions/checkout@master
-#       - name: Use Node.js
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: '14.x'
-#       - name: Install Dependencies
-#         run: npm ci
-#       - name: Run Twitter bot
-#         run: npm run twitter
-#         env:
-#           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-#           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-#           TWITTER_API_ACCESS_TOKEN: ${{ secrets.TWITTER_API_ACCESS_TOKEN }}
-#           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
