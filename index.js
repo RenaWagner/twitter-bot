@@ -23,7 +23,7 @@ var download = async function (uri, filename, callback) {
   const file = fs.createWriteStream(filename);
 
   /* Using Promises so that we can use the ASYNC AWAIT syntax */
-  await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     request({
       /* Here you should specify the exact link to the file you are trying to download */
       uri: uri,
@@ -32,8 +32,8 @@ var download = async function (uri, filename, callback) {
       .pipe(file)
       .on("finish", async () => {
         console.log(`The file is finished downloading.`);
-        result = fs.readFileSync("./file.jpg");
-        return result;
+        result = fs.readFileSync("./file.jpg").toString("base64");
+        resolve(result);
       })
       .on("error", (error) => {
         reject(error);
@@ -64,22 +64,18 @@ const fetchData = async () => {
     let mediaFile;
     (async () => {
       mediaFile = await download(imageSrc, "file.jpg");
-      console.log("mediafile in Fetch data", mediaFile);
       return mediaFile;
     })();
-  } catch (err) {
-    console.error(err);
-  }
-};
 
-const tweetData = async () => {
-  try {
-    const mediaFile = await fetchData();
-    client.post(
+    await client.post(
       "media/upload",
       { media: mediaFile },
       function (error, media, response) {
-        console.log("mediaFile", mediaFile);
+        // console.log("mediaFile tweeting:", mediaFile);
+        console.log("media", media);
+        const data = JSON.parse(media);
+        console.log("data", data);
+        console.log("data media-id", data.media_id);
         if (error) {
           console.log(error);
         } else {
@@ -101,76 +97,16 @@ const tweetData = async () => {
         }
       }
     );
+
+    return mediaFile;
   } catch (err) {
     console.error(err);
   }
 };
-tweetData();
 
-// axios
-//   .get("https://twitter-chat-bot-be.herokuapp.com/quotes")
-//   .then((response) => {
-//     const data = response.data ? response.data : {};
-//     if (data) {
-//       const quote = data.find((item) => {
-//         return item.id === randomId;
-//       });
-//       console.log("quote", quote);
-//       const imageSrc = quote.imageSource;
-//       tweet = `Tweet for you! "${quote.quote}"`;
+fetchData();
 
-//       var request = http.get(imageSrc, function (response) {
-//         response.pipe(file);
-//         response.on("close", function () {
-//           resolve();
-//         });
-//         response.on("end", function () {
-//           resolve();
-//         });
-//         response.on("finish", function () {
-//           resolve();
-//         });
-//       });
-//     } else {
-//       tweet = "You go girl! You can do this!";
-//     }
-//   })
-//   .then(() => {
-//     var data = fs.readFileSync(`${__dirname}/file.jpg`);
-//     client.post("media/upload", { media: data });
-//   })
-//   .then((media) => {
-//     console.log("media uploaded");
-//     client.post(
-//       "media/upload",
-//       { media: data }, //imageData
-//       function (error, media, response) {
-//         if (error) {
-//           console.log(error);
-//         } else {
-//           const status = {
-//             status: "I tweeted from Node.js!",
-//             media_ids: media.media_id_string,
-//           };
-//           client.post(
-//             "statuses/update",
-//             status,
-//             function (error, tweet, response) {
-//               if (error) {
-//                 console.log(error);
-//               } else {
-//                 console.log("Successfully tweeted an image!");
-//               }
-//             }
-//           );
-//         }
-//       }
-//     );
-//   })
-
-//   .catch((err) => {
-//     console.error(err);
-//   });
+//////////////////////////////
 
 // const Twitter = require("twitter");
 // const dotenv = require("dotenv");
@@ -185,6 +121,8 @@ tweetData();
 //   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 // });
 
+/////////////////////////////////
+
 // const imageData = fs.readFileSync("./helloworld.png"); //replace with the path to your image
 
 // client.post(
@@ -192,6 +130,7 @@ tweetData();
 //   { media: imageData }, //imageData
 //   function (error, media, response) {
 //     console.log("imageData", imageData);
+//     console.log("media", media);
 //     if (error) {
 //       console.log(error);
 //     } else {
