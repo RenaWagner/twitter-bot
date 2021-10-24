@@ -39,9 +39,9 @@
 #           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
 
 name: GitHub Actions Demo
-on: 
-     schedule:
-    - cron: "*/5 * * * *"
+on:
+  schedule:
+    - cron: "* 1 * * *"
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
