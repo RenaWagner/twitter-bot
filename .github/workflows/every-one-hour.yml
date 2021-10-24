@@ -10,20 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      # - uses: actions/checkout@v2
-      #   with:
-      #     fetch-depth: 0
-      # - uses: actions/setup-node@v2
-      #   with:
-      #     node-version: 12
-      # - name: Cache node modules
-      #   uses: actions/cache@v2
-      #   id: npm-cache
-      #   with:
-      #     path: "**/node_modules"
-      #     key: npm-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       npm-
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Cache node modules
+        uses: actions/cache@v2
+        id: npm-cache
+        with:
+          path: "**/node_modules"
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-
       - name: Install Node.js dependencies
         run: |-
           if [[ "${{ steps.npm-cache.outputs.cache-hit }}" != "true" ]]; then
