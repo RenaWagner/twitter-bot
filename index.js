@@ -51,6 +51,7 @@ const fetchData = async () => {
     );
     const data = response.data ? response.data : {};
     let quote;
+    console.log("randomId", randomId);
     if (data) {
       quote = data.find((item) => {
         return item.id === randomId;
