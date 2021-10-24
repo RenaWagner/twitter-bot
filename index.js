@@ -101,3 +101,13 @@ const tweetData = async () => {
 };
 
 tweetData();
+console.log("process.env.TWITTER_API_KEY", process.env.TWITTER_API_KEY);
+console.log("process.env.TWITTER_API_SECRET", process.env.TWITTER_API_SECRET);
+console.log(
+  "process.env.TWITTER_ACCESS_TOKEN",
+  process.env.TWITTER_ACCESS_TOKEN
+);
+console.log(
+  "process.env.TWITTER_ACCESS_TOKEN_SECRET",
+  process.env.TWITTER_ACCESS_TOKEN_SECRET
+);
