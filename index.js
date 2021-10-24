@@ -1,12 +1,10 @@
 require("dotenv").config();
 const axios = require("axios");
 const fs = require("fs");
-const http = require("https");
 const Twitter = require("twitter");
 const request = require("request");
 
 var file = fs.createWriteStream("file.jpg");
-var photo;
 
 const client = new Twitter({
   consumer_key: process.env.TWITTER_API_KEY,
@@ -15,9 +13,9 @@ const client = new Twitter({
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-let randomId = Math.floor(Math.random() * 19) + 1;
+let randomId = Math.floor(Math.random() * 23) + 1;
 
-var download = async function (uri, filename, callback) {
+var download = async function (uri, filename, quote) {
   let result;
   /* Create an empty file where we can save data */
   const file = fs.createWriteStream(filename);
@@ -32,8 +30,11 @@ var download = async function (uri, filename, callback) {
       .pipe(file)
       .on("finish", async () => {
         console.log(`The file is finished downloading.`);
-        result = fs.readFileSync("./file.jpg").toString("base64");
-        resolve(result);
+        result = fs.readFileSync("./file.jpg");
+        resolve({
+          media: result,
+          quote: quote,
+        });
       })
       .on("error", (error) => {
         reject(error);
@@ -50,35 +51,36 @@ const fetchData = async () => {
       "https://twitter-chat-bot-be.herokuapp.com/quotes"
     );
     const data = response.data ? response.data : {};
+    let quote;
     if (data) {
-      const quote = data.find((item) => {
+      quote = data.find((item) => {
         return item.id === randomId;
       });
       console.log("quote", quote);
       imageSrc = quote.imageSource;
-      tweet = `Tweet for you! "${quote.quote}"`;
-    } else {
-      tweet = "You go girl! You can do this!";
     }
+    return await download(imageSrc, "file.jpg", quote);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-    let mediaFile;
-    (async () => {
-      mediaFile = await download(imageSrc, "file.jpg");
-      return mediaFile;
-    })();
-
-    await client.post(
+const tweetData = async () => {
+  try {
+    const mediaFile = await fetchData();
+    console.log("mediaFile", mediaFile);
+    client.post(
       "media/upload",
-      { media: mediaFile },
-      function (error, media, response) {
-        // console.log("mediaFile tweeting:", mediaFile);
-        console.log("media", media);
+      { media: mediaFile.media },
+      function (error, data, response) {
+        console.log("mediaFile tweeting:", mediaFile);
+        console.log("data", data);
         if (error) {
           console.log(error);
         } else {
           const status = {
-            status: "I tweeted from Node.js!",
-            media_ids: media.media_id_string,
+            status: `Tweet for you! "${mediaFile.quote.quote}"`,
+            media_ids: data.media_id_string,
           };
           client.post(
             "statuses/update",
@@ -94,55 +96,9 @@ const fetchData = async () => {
         }
       }
     );
-
-    return mediaFile;
   } catch (err) {
     console.error(err);
   }
 };
 
-fetchData();
-
-//////////////////////////////
-
-// const Twitter = require("twitter");
-// const dotenv = require("dotenv");
-// const fs = require("fs");
-
-// dotenv.config();
-
-// const client = new Twitter({
-//   consumer_key: process.env.TWITTER_API_KEY,
-//   consumer_secret: process.env.TWITTER_API_SECRET,
-//   access_token_key: process.env.TWITTER_ACCESS_TOKEN,
-//   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-// });
-
-/////////////////////////////////
-
-// const imageData = fs.readFileSync("./helloworld.png"); //replace with the path to your image
-
-// client.post(
-//   "media/upload",
-//   { media: imageData }, //imageData
-//   function (error, media, response) {
-//     console.log("imageData", imageData);
-//     console.log("media", media);
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       const status = {
-//         status: "I tweeted from Node.js!",
-//         media_ids: media.media_id_string,
-//       };
-
-//       client.post("statuses/update", status, function (error, tweet, response) {
-//         if (error) {
-//           console.log(error);
-//         } else {
-//           console.log("Successfully tweeted an image!");
-//         }
-//       });
-//     }
-//   }
-// );
+tweetData();

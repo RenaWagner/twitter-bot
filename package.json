@@ -18,7 +18,6 @@
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1",
-    "twitter": "^1.7.1",
-    "twitter-api-client": "^1.4.0"
+    "twitter": "^1.7.1"
   }
 }
