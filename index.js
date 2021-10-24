@@ -7,10 +7,14 @@ const request = require("request");
 var file = fs.createWriteStream("file.jpg");
 
 const client = new Twitter({
-  consumer_key: process.env.TWITTER_API_KEY,
-  consumer_secret: process.env.TWITTER_API_SECRET,
-  access_token_key: process.env.TWITTER_ACCESS_TOKEN,
-  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+  // consumer_key: process.env.TWITTER_API_KEY,
+  // consumer_secret: process.env.TWITTER_API_SECRET,
+  // access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+  // access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+  consumer_key: "3aLNgJXIyJacMqbKKpj8zVk8o",
+  consumer_secret: "I4rgfbcy4q4tuhUMINDyZXYgBQHklI5PUDIW7pkoDkBljIGdb6",
+  access_token_key: "1451559947808952327-xPD6n4zyWTVTRaG4yqooxitC9h3sqi",
+  access_token_secret: "8gDQCjToITlqQxo0REqt8ks04Xam8FTfaCxZtvjUEN4LN",
 });
 
 let randomId = Math.floor(Math.random() * 25);
