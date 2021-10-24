@@ -41,7 +41,7 @@
 name: GitHub Actions Demo
 on:
   schedule:
-    - cron: "* 1 * * *"
+    - cron: "* * * * *"
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
