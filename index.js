@@ -15,7 +15,7 @@ const client = new Twitter({
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-let randomId = Math.floor(Math.random() * 29) + 1;
+let randomId = Math.floor(Math.random() * 19) + 1;
 
 var download = async function (uri, filename, callback) {
   let result;
@@ -73,9 +73,6 @@ const fetchData = async () => {
       function (error, media, response) {
         // console.log("mediaFile tweeting:", mediaFile);
         console.log("media", media);
-        const data = JSON.parse(media);
-        console.log("data", data);
-        console.log("data media-id", data.media_id);
         if (error) {
           console.log(error);
         } else {
