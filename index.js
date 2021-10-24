@@ -29,7 +29,6 @@ var download = async function (uri, filename, quote) {
     })
       .pipe(file)
       .on("finish", async () => {
-        console.log(`The file is finished downloading.`);
         result = fs.readFileSync("./file.jpg");
         resolve({
           media: result,
@@ -56,7 +55,6 @@ const fetchData = async () => {
       quote = data.find((item) => {
         return item.id === randomId;
       });
-      console.log("quote", quote);
       imageSrc = quote.imageSource;
     }
     return await download(imageSrc, "file.jpg", quote);
@@ -68,13 +66,10 @@ const fetchData = async () => {
 const tweetData = async () => {
   try {
     const mediaFile = await fetchData();
-    console.log("mediaFile", mediaFile);
     client.post(
       "media/upload",
       { media: mediaFile.media },
       function (error, data, response) {
-        console.log("mediaFile tweeting:", mediaFile);
-        console.log("data", data);
         if (error) {
           console.log(error);
         } else {
