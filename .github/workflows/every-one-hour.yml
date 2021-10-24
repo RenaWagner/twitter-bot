@@ -3,7 +3,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: "* * * * *"
+    - cron: "* 1 * * *"
 
 jobs:
   setUpAndRun:

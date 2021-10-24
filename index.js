@@ -13,7 +13,7 @@ const client = new Twitter({
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-let randomId = Math.floor(Math.random() * 25);
+let randomId = Math.floor(Math.random() * 24);
 
 var download = async function (uri, filename, quote) {
   let result;
@@ -51,7 +51,6 @@ const fetchData = async () => {
     );
     const data = response.data ? response.data : {};
     let quote;
-    console.log("randomId", randomId);
     if (data) {
       quote = data.find((item) => {
         return item.id === randomId;
